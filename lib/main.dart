@@ -7,6 +7,7 @@ void main() async {
   final prefs = await SharedPreferences.getInstance();
   runApp(StoreApp(prefs: prefs));
 }
+
 class Product {
   const Product({
     required this.id,
@@ -160,7 +161,7 @@ class _StoreHomeState extends State<StoreHome> {
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
           title: const Text(
-            'تطوير سامر البديلي - 781078051',
+            'سوقك',
             style: TextStyle(fontWeight: FontWeight.w900, fontSize: 26),
           ),
           actions: [
@@ -168,25 +169,6 @@ class _StoreHomeState extends State<StoreHome> {
               onPressed: widget.onTheme,
               icon: const Icon(Icons.brightness_6_outlined),
             ),
-            IconButton(
-  icon: const Icon(Icons.admin_panel_settings),
-  tooltip: 'لوحة الأدمن',
-  onPressed: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => AdminLoginScreen(
-          categories: categories,
-          onAddCategory: (newCategory) {
-            setState(() {
-              categories.add(newCategory);
-            });
-          },
-        ),
-      ),
-    );
-  },
-),
             Stack(
               alignment: Alignment.topRight,
               children: [
@@ -723,181 +705,6 @@ class _StoreHomeState extends State<StoreHome> {
             child: const Text('تأكيد'),
           ),
         ],
-      ),
-    );
-  }
-}
-class AdminScreen extends StatefulWidget {
-  final List<String> categories;
-  final Function(String) onAddCategory;
-
-  const AdminScreen({
-    Key? key,
-    required this.categories,
-    required this.onAddCategory,
-  }) : super(key: key);
-
-  @override
-  State<AdminScreen> createState() => _AdminScreenState();
-}
-
-class _AdminScreenState extends State<AdminScreen> {
-  final TextEditingController _categoryController = TextEditingController();
-
-  void _submitCategory() {
-    final newCategory = _categoryController.text.trim();
-    if (newCategory.isNotEmpty) {
-      widget.onAddCategory(newCategory);
-      _categoryController.clear();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('تمت إضافة قسم "$newCategory" بنجاح!')),
-      );
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('لوحة تحكم الأدمن'),
-        backgroundColor: Colors.indigo,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'إضافة قسم جديد للمتجر',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _categoryController,
-                    decoration: const InputDecoration(
-                      labelText: 'اسم القسم (مثال: إلكترونيات)',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                ElevatedButton(
-                  onPressed: _submitCategory,
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-                    backgroundColor: Colors.indigo,
-                  ),
-                  child: const Text('إضافة'),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            const Text(
-              'الأقسام الحالية:',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            Expanded(
-              child: ListView.builder(
-                itemCount: widget.categories.length,
-                itemBuilder: (context, index) {
-                  return Card(
-                    child: ListTile(
-                      leading: const Icon(Icons.category, color: Colors.indigo),
-                      title: Text(widget.categories[index]),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-class AdminLoginScreen extends StatefulWidget {
-  final List<String> categories;
-  final Function(String) onAddCategory;
-
-  const AdminLoginScreen({
-    Key? key,
-    required this.categories,
-    required this.onAddCategory,
-  }) : super(key: key);
-
-  @override
-  State<AdminLoginScreen> createState() => _AdminLoginScreenState();
-}
-
-class _AdminLoginScreenState extends State<AdminLoginScreen> {
-  final _usernameController = TextEditingController();
-  final _passwordController = TextEditingController();
-
-  final String _adminUsername = "ly8109094@gmail.com";
-  final String _adminPassword = "samer@771181470";
-
-  void _login() {
-    if (_usernameController.text == _adminUsername &&
-        _passwordController.text == _adminPassword) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => AdminScreen(
-            categories: widget.categories,
-            onAddCategory: widget.onAddCategory,
-          ),
-        ),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('اسم المستخدم أو كلمة المرور غير صحيحة')),
-      );
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('تسجيل دخول الأدمن'),
-        backgroundColor: Colors.indigo,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(
-              controller: _usernameController,
-              decoration: const InputDecoration(
-                labelText: 'اسم المستخدم',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 15),
-            TextField(
-              controller: _passwordController,
-              obscureText: true,
-              decoration: const InputDecoration(
-                labelText: 'كلمة المرور',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _login,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.indigo,
-                minimumSize: const Size.fromHeight(50),
-              ),
-              child: const Text('تسجيل الدخول', style: TextStyle(fontSize: 16)),
-            ),
-          ],
-        ),
       ),
     );
   }
